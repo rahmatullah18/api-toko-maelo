@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -14,11 +15,11 @@ return new class extends Migration {
     {
         Schema::create("reports", function (Blueprint $table) {
             $table->id();
-            $table->date("date_start");
-            $table->date("date_end");
-            $table->string("status");
-            $table->decimal("total_price");
-            $table->decimal("total_order");
+            $table->date("report_date_start");
+            $table->date("report_date_end");
+            $table->string("report_status");
+            $table->decimal("report_total_price");
+            $table->decimal("report_total_order");
             $table->timestamps();
         });
     }

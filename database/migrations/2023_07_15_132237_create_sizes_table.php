@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -14,8 +15,8 @@ return new class extends Migration {
     {
         Schema::create("sizes", function (Blueprint $table) {
             $table->id();
-            $table->string("size");
-            $table->decimal("stock");
+            $table->string("size_size");
+            $table->decimal("size_stock");
             $table->timestamps();
         });
     }

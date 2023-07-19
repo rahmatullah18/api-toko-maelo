@@ -27,11 +27,11 @@ class OrderSeeder extends Seeder
         $statusList = ["pending", "In Progress", "Completed", "Cancelled"];
         for ($i = 0; $i <= 10; $i++) {
             DB::table("orders")->insert([
-                "quantity" => 10,
+                "order_quantity" => 10,
                 "product_id" => $faker->randomElement($productsIds),
                 "user_id" => $faker->randomElement($usersIds),
-                "total_price" => $faker->randomNumber(2),
-                "status" => $faker->randomElement($statusList),
+                "order_total_price" => $faker->randomNumber(2),
+                "order_status" => $faker->randomElement($statusList),
                 "created_at" => Carbon::now()->format("Y-m-d H:i:s"),
                 "updated_at" => Carbon::now()->format("Y-m-d H:i:s"),
             ]);

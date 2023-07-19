@@ -18,9 +18,9 @@ class UserSeeder extends Seeder
         // $phoneNumber = $faker->unique()->numerify("08##########");
         for ($i = 0; $i <= 10; $i++) {
             DB::table("users")->insert([
-                "name" => $faker->name,
-                "no_wa" => $faker->unique()->numerify("08##########"),
-                "address" => $faker->address,
+                "user_name" => $faker->name,
+                "user_no_wa" => $faker->unique()->numerify("08##########"),
+                "user_address" => $faker->address,
                 "created_at" => Carbon::now()->format("Y-m-d H:i:s"),
                 "updated_at" => Carbon::now()->format("Y-m-d H:i:s"),
             ]);

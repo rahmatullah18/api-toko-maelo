@@ -21,8 +21,8 @@ class TypeProductSeeder extends Seeder
         for ($i = 0; $i <= 10; $i++) {
             DB::table("type_products")->insert([
                 "product_id" => $faker->randomElement($productsIds),
-                "url" => $faker->url,
-                "color" => $faker->colorName,
+                "type_product_url" => $faker->url,
+                "type_product_color" => $faker->colorName,
                 "created_at" => Carbon::now()->format("Y-m-d H:i:s"),
                 "updated_at" => Carbon::now()->format("Y-m-d H:i:s"),
             ]);

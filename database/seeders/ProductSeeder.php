@@ -22,15 +22,15 @@ class ProductSeeder extends Seeder
         // DB::table("products")->truncate();
 
         $faker = Faker::create("id_ID");
-        $title = $faker->title;
         $categoryIds = Category::pluck("id")->all();
         for ($i = 0; $i <= 10; $i++) {
+            $title = $faker->sentence;
             DB::table("products")->insert([
-                "title" => $title,
-                "slug" => Str::slug($title),
+                "product_title" => $faker->sentence,
+                "product_slug" => Str::slug($title),
                 "category_id" => $faker->randomElement($categoryIds),
-                "price" => $faker->randomNumber(2),
-                "image" => $faker->image,
+                "product_price" => $faker->randomNumber(2),
+                "prduct_image" => $faker->image,
                 "created_at" => Carbon::now()->format("Y-m-d H:i:s"),
                 "updated_at" => Carbon::now()->format("Y-m-d H:i:s"),
             ]);
