@@ -33,4 +33,14 @@ Route::prefix("product")->group(function () {
         ProductController::class,
         "productsFilterByCategory",
     ]);
+
+    Route::get("/get-products-by-category/{id}", [
+        ProductController::class,
+        "getAllProductByCategory",
+    ]);
+
+    Route::get("/get-product-by-slug/{slug}", [
+        ProductController::class,
+        "getOneProductBySlug"
+    ]);
 });

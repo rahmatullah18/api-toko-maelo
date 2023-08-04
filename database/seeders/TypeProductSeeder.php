@@ -13,7 +13,6 @@ class TypeProductSeeder extends Seeder
 {
     public function run()
     {
-        // DB::table("type_products")->truncate();
 
         $faker = Faker::create("id_ID");
         $productsIds = Product::pluck("id")->all();
@@ -23,6 +22,8 @@ class TypeProductSeeder extends Seeder
                 "product_id" => $faker->randomElement($productsIds),
                 "type_product_url" => $faker->url,
                 "type_product_color" => $faker->colorName,
+                "type_product_size" => 'L',
+                "type_product_stock" => 100,
                 "created_at" => Carbon::now()->format("Y-m-d H:i:s"),
                 "updated_at" => Carbon::now()->format("Y-m-d H:i:s"),
             ]);

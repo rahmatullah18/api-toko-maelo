@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string("type_product_url");
             $table->string("type_product_color");
+            $table->string("type_product_size");
+            $table->integer("type_product_stock");
             $table->timestamps();
         });
     }
