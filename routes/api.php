@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -43,4 +45,23 @@ Route::prefix("product")->group(function () {
         ProductController::class,
         "getOneProductBySlug"
     ]);
+
+
+    // admin
+    Route::get("/get-all-product", [ProductController::class, 'allProducts']);
+    Route::get("/get-product-with-type/{slug}", [ProductController::class, 'getProductWithType']);
+    Route::post('/create-data-product',  [ProductController::class, 'createDataProduct']);
+
+    Route::post('/update-data-product/{slug}',  [ProductController::class, 'updateDataProduct']);
+    Route::delete('/delete-data-product/{slug}',  [ProductController::class, 'deleteDataProduct']);
 });
+
+Route::prefix("category")->group(function () {
+    Route::get("/get-all-category", [
+        CategoryController::class,
+        "getAllCategory",
+    ]);
+});
+
+// login
+Route::post("/login", [LoginController::class, 'userLogin']);

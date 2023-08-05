@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -47,5 +48,137 @@ class ProductController extends Controller
             "prduct_image" => $productCollect["prduct_image"],
             "type_products" => $typeProductsCollect,
         ]);
+    }
+
+    public function allProducts()
+    {
+        $products = DB::table('products')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($products);
+    }
+
+    public function createDataProduct(Request $request)
+    {
+        try {
+            $typeProducts = $request->input("type_products");
+            $imageName = $request->file('prduct_image')->getClientOriginalName();
+            $request->file('prduct_image')->storeAs('images', $imageName, 'public');
+            $product = Product::create([
+                'category_id' => (int)$request->category_id,
+                'product_title' => $request->product_title,
+                'product_slug' => $request->product_slug,
+                'product_price' => (int)$request->product_price,
+                'prduct_image' => $imageName
+            ]);
+            foreach ($typeProducts as $type) {
+                $product->typeProducts()->create([
+                    'type_product_color' => $type['type_product_color'],
+                    'type_product_size' => $type['type_product_size'],
+                    'type_product_stock' => (int) $type['type_product_stock'],
+                    'type_product_url' => '-',
+                ]);
+            }
+
+
+            return response()->json([
+                'message' => 'Data berhasil di input',
+                'tes' => is_array($typeProducts)
+            ], 201);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ], 400);
+        }
+    }
+
+    public function getProductWithType($slug)
+    {
+        $product = Product::with('typeProducts')->where('product_slug', '=', "$slug")->first();
+        return response()->json([
+            'category_id' => $product->category_id,
+            'product_title' => $product->product_title,
+            'product_slug' => $product->product_slug,
+            'product_price' => $product->product_price,
+            'prduct_image' => $product->prduct_image,
+            'type_products' => $product->typeProducts,
+        ]);
+    }
+
+    public function updateDataProduct(Request $request, $slug)
+    {
+        try {
+            $product = Product::where("product_slug", "=", "$slug")->first();
+
+            $typeProducts = $request->input("type_products");
+
+            if ($request->hasFile('prduct_image')) {
+                $imageName = $request->file('prduct_image')->getClientOriginalName();
+                $request->file('prduct_image')->storeAs('images', $imageName, 'public');
+                $product->prduct_image = $imageName;
+            }
+
+            $product->category_id = (int) $request->category_id;
+            $product->product_title = $request->product_title;
+            $product->product_slug = $request->product_slug;
+            $product->product_price = (int) $request->product_price;
+            $product->save();
+
+            // Delete existing type products for the product
+            $product->typeProducts()->delete();
+
+            foreach ($typeProducts as $type) {
+                $product->typeProducts()->create([
+                    'type_product_color' => $type['type_product_color'],
+                    'type_product_size' => $type['type_product_size'],
+                    'type_product_stock' => (int) $type['type_product_stock'],
+                    'type_product_url' => '-',
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Data berhasil diupdate',
+                // 'tes' => $request->all()
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ], 400);
+        }
+    }
+
+
+    public function deleteDataProduct($slug)
+    {
+        try {
+            // Ambil data produk berdasarkan slug
+            $product = Product::where("product_slug", "=", $slug)->first();
+
+            if (!$product) {
+                return response()->json([
+                    'message' => 'Produk tidak ditemukan'
+                ], 404);
+            }
+
+            // Hapus tipe-tipe produk terlebih dahulu
+            $product->typeProducts()->delete();
+
+            // Hapus gambar dari direktori public/images jika ada
+            if ($product->prduct_image) {
+                Storage::delete('public/images/' . $product->prduct_image);
+            }
+
+            // Setelah tipe-tipe produk dan gambar dihapus, hapus produk itu sendiri
+            $product->delete();
+
+            return response()->json([
+                'message' => 'Produk beserta tipe-tipe produknya dan gambar berhasil dihapus'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ], 400);
+        }
     }
 }
