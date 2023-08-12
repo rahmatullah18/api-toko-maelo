@@ -181,4 +181,14 @@ class ProductController extends Controller
             ], 400);
         }
     }
+
+    public function searchProduct($query)
+    {
+        // $query = $request->get('search');
+
+        $products = Product::where('product_title', 'like', "%{$query}%")
+            ->get(['id', 'product_slug', 'product_title']);
+
+        return response()->json($products);
+    }
 }

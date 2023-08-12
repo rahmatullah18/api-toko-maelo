@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportController;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -48,14 +50,17 @@ Route::prefix("product")->group(function () {
 
 
     // admin
+    // product
     Route::get("/get-all-product", [ProductController::class, 'allProducts']);
     Route::get("/get-product-with-type/{slug}", [ProductController::class, 'getProductWithType']);
     Route::post('/create-data-product',  [ProductController::class, 'createDataProduct']);
 
     Route::post('/update-data-product/{slug}',  [ProductController::class, 'updateDataProduct']);
     Route::delete('/delete-data-product/{slug}',  [ProductController::class, 'deleteDataProduct']);
+    Route::get('/search-product/{query}',  [ProductController::class, 'searchProduct']);
 });
 
+// category
 Route::prefix("category")->group(function () {
     Route::get("/get-all-category", [
         CategoryController::class,
@@ -63,5 +68,16 @@ Route::prefix("category")->group(function () {
     ]);
 });
 
+// orders
+Route::prefix("order")->group(function () {
+    Route::get('/get-all-orders', [OrderController::class, 'getAllOrder']);
+    Route::post('/create-order', [OrderController::class, 'createOrder']);
+    Route::post('/send-message', [OrderController::class, 'sendMessage']);
+    Route::post('/update-status-order', [OrderController::class, 'updateStatusOrder']);
+    Route::delete('/delete-order/{id}', [OrderController::class, 'deleteOrder']);
+});
+
+// report
+Route::post('/report', [ReportController::class, 'index']);
 // login
 Route::post("/login", [LoginController::class, 'userLogin']);

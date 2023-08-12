@@ -17,7 +17,16 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = ["name", "address", "no_wa"];
+    protected $fillable = ["user_name", "user_address", "user_no_wa"];
+
+
+
+    public function order()
+    {
+        return $this->hasOne(Order::class);
+    }
+
+
 
     /**
      * The attributes that should be hidden for serialization.
