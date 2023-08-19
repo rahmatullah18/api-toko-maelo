@@ -59,19 +59,61 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
+    //   public function createDataProduct(Request $request)
+    //   {
+    //     try {
+    //       $typeProducts = $request->input("type_products");
+    //       $imageName = $request->file('prduct_image')->getClientOriginalName();
+    //       $request->file('prduct_image')->storeAs('images', $imageName, 'public');
+    //       $product = Product::create([
+    //         'category_id' => (int)$request->category_id,
+    //         'product_title' => $request->product_title,
+    //         'product_slug' => $request->product_slug,
+    //         'product_price' => (int)$request->product_price,
+    //         'prduct_image' => $imageName
+    //       ]);
+    //       foreach ($typeProducts as $type) {
+    //         $product->typeProducts()->create([
+    //           'type_product_color' => $type['type_product_color'],
+    //           'type_product_size' => $type['type_product_size'],
+    //           'type_product_stock' => (int) $type['type_product_stock'],
+    //           'type_product_url' => '-',
+    //         ]);
+    //       }
+
+
+    //       return response()->json([
+    //         'message' => 'Data berhasil di input',
+    //         'tes' => is_array($typeProducts)
+    //       ], 201);
+    //     } catch (\Throwable $th) {
+    //       return response()->json([
+    //         'message' => $th->getMessage()
+    //       ], 400);
+    //     }
+    //   }
+
     public function createDataProduct(Request $request)
     {
         try {
             $typeProducts = $request->input("type_products");
-            $imageName = $request->file('prduct_image')->getClientOriginalName();
-            $request->file('prduct_image')->storeAs('images', $imageName, 'public');
+            // return response()->json($request->file('prduct_image'));
+            $images = [];
+
+            foreach ($request->file('prduct_image') as $index => $image) {
+                $imageName = $image->getClientOriginalName();
+                $image->storeAs('images', $imageName, 'public');
+                $images[] = $imageName;
+            }
+
             $product = Product::create([
                 'category_id' => (int)$request->category_id,
                 'product_title' => $request->product_title,
                 'product_slug' => $request->product_slug,
                 'product_price' => (int)$request->product_price,
-                'prduct_image' => $imageName
+                'prduct_image' => implode(', ', $images)
             ]);
+
             foreach ($typeProducts as $type) {
                 $product->typeProducts()->create([
                     'type_product_color' => $type['type_product_color'],
@@ -80,7 +122,6 @@ class ProductController extends Controller
                     'type_product_url' => '-',
                 ]);
             }
-
 
             return response()->json([
                 'message' => 'Data berhasil di input',
@@ -92,6 +133,7 @@ class ProductController extends Controller
             ], 400);
         }
     }
+
 
     public function getProductWithType($slug)
     {
