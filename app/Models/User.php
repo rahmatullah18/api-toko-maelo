@@ -17,9 +17,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = ["user_name", "user_address", "user_no_wa"];
-
-
+    protected $fillable = ["user_name", "user_address", "user_no_wa", "password"];
 
     public function order()
     {

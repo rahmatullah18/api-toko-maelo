@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserController;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware("auth:sanctum")->get("/user", function (Request $request) {
     return $request->user();
 });
+
 
 Route::get("/testing-api", function () {
     return response()->json([
@@ -81,3 +83,8 @@ Route::prefix("order")->group(function () {
 Route::post('/report', [ReportController::class, 'index']);
 // login
 Route::post("/login", [LoginController::class, 'userLogin']);
+
+// login register user
+Route::post('/register-user', [UserController::class, 'registerUser']);
+Route::post('/login-user', [UserController::class, 'loginUser']);
+Route::post('/pesanan-diterima', [OrderController::class, 'pesananDiterima']);

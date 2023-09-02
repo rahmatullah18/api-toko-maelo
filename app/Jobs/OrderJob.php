@@ -22,6 +22,13 @@ class OrderJob implements ShouldQueue
     }
     public function handle()
     {
+
+        $user = User::find((int)$this->request['id']);
+        $user->update([
+            'user_address' => $this->request['user_address'],
+            'user_no_wa' => $this->request['user_no_wa']
+        ]);
+
         $user = User::create([
             'user_name' => $this->request['user_name'],
             'user_address' => $this->request['user_address'],

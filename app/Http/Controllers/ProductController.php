@@ -44,6 +44,8 @@ class ProductController extends Controller
             "id" => $productCollect['id'],
             "product_name" => $productCollect["product_title"],
             "product_slug" => $productCollect["product_slug"],
+            "product_desc" => $productCollect["product_desc"],
+            "category_id" => $productCollect["category_id"],
             "product_price" => $productCollect["product_price"],
             "prduct_image" => $productCollect["prduct_image"],
             "type_products" => $typeProductsCollect,
@@ -59,39 +61,7 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-    //   public function createDataProduct(Request $request)
-    //   {
-    //     try {
-    //       $typeProducts = $request->input("type_products");
-    //       $imageName = $request->file('prduct_image')->getClientOriginalName();
-    //       $request->file('prduct_image')->storeAs('images', $imageName, 'public');
-    //       $product = Product::create([
-    //         'category_id' => (int)$request->category_id,
-    //         'product_title' => $request->product_title,
-    //         'product_slug' => $request->product_slug,
-    //         'product_price' => (int)$request->product_price,
-    //         'prduct_image' => $imageName
-    //       ]);
-    //       foreach ($typeProducts as $type) {
-    //         $product->typeProducts()->create([
-    //           'type_product_color' => $type['type_product_color'],
-    //           'type_product_size' => $type['type_product_size'],
-    //           'type_product_stock' => (int) $type['type_product_stock'],
-    //           'type_product_url' => '-',
-    //         ]);
-    //       }
 
-
-    //       return response()->json([
-    //         'message' => 'Data berhasil di input',
-    //         'tes' => is_array($typeProducts)
-    //       ], 201);
-    //     } catch (\Throwable $th) {
-    //       return response()->json([
-    //         'message' => $th->getMessage()
-    //       ], 400);
-    //     }
-    //   }
 
     public function createDataProduct(Request $request)
     {
@@ -109,6 +79,7 @@ class ProductController extends Controller
             $product = Product::create([
                 'category_id' => (int)$request->category_id,
                 'product_title' => $request->product_title,
+                'product_desc' => $request->product_desc,
                 'product_slug' => $request->product_slug,
                 'product_price' => (int)$request->product_price,
                 'prduct_image' => implode(', ', $images)
@@ -141,6 +112,7 @@ class ProductController extends Controller
         return response()->json([
             'category_id' => $product->category_id,
             'product_title' => $product->product_title,
+            'product_desc' => $product->product_desc,
             'product_slug' => $product->product_slug,
             'product_price' => $product->product_price,
             'prduct_image' => $product->prduct_image,
@@ -151,18 +123,24 @@ class ProductController extends Controller
     public function updateDataProduct(Request $request, $slug)
     {
         try {
+            // cari produk berdasarkan slug
             $product = Product::where("product_slug", "=", "$slug")->first();
 
             $typeProducts = $request->input("type_products");
 
             if ($request->hasFile('prduct_image')) {
-                $imageName = $request->file('prduct_image')->getClientOriginalName();
-                $request->file('prduct_image')->storeAs('images', $imageName, 'public');
-                $product->prduct_image = $imageName;
+                $images = [];
+                foreach ($request->file('prduct_image') as $index => $image) {
+                    $imageName = $image->getClientOriginalName();
+                    $image->storeAs('images', $imageName, 'public');
+                    $images[] = $imageName;
+                }
+                $product->prduct_image = implode(', ', $images);
             }
 
             $product->category_id = (int) $request->category_id;
             $product->product_title = $request->product_title;
+            $product->product_desc = $request->product_desc;
             $product->product_slug = $request->product_slug;
             $product->product_price = (int) $request->product_price;
             $product->save();
@@ -181,7 +159,6 @@ class ProductController extends Controller
 
             return response()->json([
                 'message' => 'Data berhasil diupdate',
-                // 'tes' => $request->all()
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
